@@ -1,0 +1,20 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    konghq.com/strip-path: "true"
+    kubernetes.io/ingress.class: kong
+    konghq.com/plugins: request-transformer,oidc #indicate here
+  name: angular-ingress
+spec:
+  rules:
+  - http:
+      paths:
+      - backend:
+          service:
+            name: sample-angular
+            port:
+              number: 80
+        path: /sample-angular/
+        pathType: Prefix
+
