@@ -72,15 +72,15 @@ env:
   prefix: /kong_prefix/
   database: postgres
   pg_user: kong
-  pg_password: CloudEnabled
+  #pg_password: CloudEnabled
   plugins: oidc
   admin_api_uri: http://172.20.105.63:32424
   #admin_gui_url: https://172.20.105.71:35171
-  # password:
-  #  valueFrom:
-  #    secretKeyRef:
-  #      name: kong-enterprise-superuser-password #CHANGEME
-  #      key: password #CHANGEME
+  password:
+   valueFrom:
+     secretKeyRef:
+       name: kong-enterprise-superuser-password #CHANGEME
+       key: password #CHANGEME
 
 # This section is any customer specific environments variables that doesn't require KONG_ prefix.
 # These custom environment variables are typicall used in custom plugins or serverless plugins to
