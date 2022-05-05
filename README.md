@@ -56,7 +56,15 @@ helm repo add kong https://charts.konghq.com
 helm repo update
 ```
 
-4. Install kong open source version with the values.yaml file.
+4. Create a secret for postgres DB.
+
+```
+kubectl create secret generic kong-enterprise-superuser-password \
+-n kong \
+--from-literal=password=CloudEnabled
+```
+
+5. Install kong open source version with the values.yaml file.
 
 ```
 helm install my-kong kong/kong -n kong --values ./values.yaml
@@ -86,7 +94,7 @@ In the values.yaml file line 103 and 104, it specifies the customized image in t
 107   # tag: "2.7.0.0-alpine"
 ```
 
-5. Get Kong admin API NodePort number from the command below.
+6. Get Kong admin API NodePort number from the command below.
 
 ```
 [root@st-mct-cplb kong-opensource]# kubectl -n kong get svc
@@ -97,7 +105,7 @@ my-kong-postgresql            ClusterIP      10.102.228.20   <none>           54
 my-kong-postgresql-headless   ClusterIP      None            <none>           5432/TCP                        4d17h
 ```
 
-6. Update values.yaml file line 77 with correct admin API endpoint from last step.
+7. Update values.yaml file line 77 with correct admin API endpoint from last step.
 
 ```
  71 env:
@@ -110,13 +118,13 @@ my-kong-postgresql-headless   ClusterIP      None            <none>           54
  78   #admin_gui_url: https://172.20.105.71:35171
 ```
 
-7. Run the helm update command below to update the installation.
+8. Run the helm update command below to update the installation.
 
 ```
 helm upgrade my-kong kong/kong -n kong --values ./values.yaml
 ```
 
-8. Change the kong proxy service from NodePort to ingress to get external IP.
+9. Change the kong proxy service from NodePort to ingress to get external IP.
 
 ```
 [root@st-mct-cplb kong-opensource]# kubectl -n kong get svc
@@ -127,10 +135,10 @@ my-kong-postgresql            ClusterIP      10.102.228.20   <none>           54
 my-kong-postgresql-headless   ClusterIP      None            <none>           5432/TCP                        4d17h
 ```
 
-9. Verify OIDC plugin is enabled in the installation.
+10. Verify OIDC plugin is enabled in the installation.
 
 ```
-> curl -s http://172.20.105.63:32424ss | jq .plugins.available_on_server.oidc
+> curl -s http://172.20.105.98:32424 | jq .plugins.available_on_server.oidc
 ```
 
 This should return true. Install the tool jq if not install in the VM yet.
@@ -203,7 +211,6 @@ spec:
 
 5. Test the website with OIDC. 
 
-![Alt text](./images/image-20211027142953063.png?raw=true "Title")
 
 ## Reference:
 1. https://dev.to/robincher/securing-your-site-via-oidc-powered-by-kong-and-keycloak-2ccc
